@@ -14,7 +14,11 @@ def printBinario(n):
     print(bin(n)[2:], end='')
 
 
+<<<<<<< HEAD
 def imprimirTabela():
+=======
+def printTabela():
+>>>>>>> bf54236a54d6fa6472fedcf8b8d42f724c452b93
     print('Decimal\t\tOctal\t\tHexadecimal\tBinario')
     print('-------\t\t-----\t\t-----------\t-------')
     for x in range(256):
@@ -28,4 +32,8 @@ def imprimirTabela():
         print()
 
 
+<<<<<<< HEAD
 imprimirTabela()
+=======
+printTabela()
+>>>>>>> bf54236a54d6fa6472fedcf8b8d42f724c452b93
