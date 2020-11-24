@@ -40,7 +40,8 @@ class NotaFiscal():
         self.valorNota = valor
 
     def imprimirlinha(self, item):
-        return f"{item._sequencial:<8}{item._descricao:<52}{item._quantidade:<12}{item._valorUnitario:<20}{item._valorUnitario * item._quantidade:<8}"
+        seq = str(item._sequencial).zfill(3)
+        return f"{seq:<8}{item._descricao:<52}{item._quantidade:<12}{item._valorUnitario:<20,.2f}{item._valorUnitario * item._quantidade:<8,.2f}"
 
     def imprimirNotaFiscal(self):
         date = f'{self._data.day}/{self._data.month}/{self._data.year}'
@@ -63,13 +64,11 @@ class NotaFiscal():
                 print('\n')
 
 
-        
-        
         valortotal = 0
         for item in self._itens:
             valortotal += item._valorUnitario * item._quantidade
         footer = f"""
         ____________________________________________________________________________________________________
-        Valor Total: {valortotal}
+        Valor Total: {valortotal:.2f}
                   """
         print(footer)
