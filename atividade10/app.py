@@ -1,5 +1,8 @@
-from usuarios import Usuarios
-from tkinter  import *
+
+from tkinter import *
+
+from place import PlaceModel
+
 
 class Application:
     def __init__(self, master=None):
@@ -42,23 +45,24 @@ class Application:
 
         self.titulo = Label(self.container1, text="Informe os dados :")
         self.titulo["font"] = ("Calibri", "9", "bold")
-        self.titulo.pack ()
+        self.titulo.pack()
 
         self.lblidusuario = Label(self.container2,
-        text="idUsuario:", font=self.fonte, width=10)
+                                  text="idLugar:", font=self.fonte, width=10)
         self.lblidusuario.pack(side=LEFT)
 
-        self.txtidusuario = Entry(self.container2)
-        self.txtidusuario["width"] = 10
-        self.txtidusuario["font"] = self.fonte
-        self.txtidusuario.pack(side=LEFT)
+        self.txtidlugar = Entry(self.container2)
+        self.txtidlugar["width"] = 10
+        self.txtidlugar["font"] = self.fonte
+        self.txtidlugar.pack(side=LEFT)
 
-        self.btnBuscar = Button(self.container2, text="Buscar", font=self.fonte, width=10)
-        self.btnBuscar["command"] = self.buscarUsuario
+        self.btnBuscar = Button(
+            self.container2, text="Buscar", font=self.fonte, width=10)
+        self.btnBuscar["command"] = self.buscarPlace
         self.btnBuscar.pack(side=RIGHT)
 
         self.lblnome = Label(self.container3, text="Nome:",
-        font=self.fonte, width=10)
+                             font=self.fonte, width=10)
         self.lblnome.pack(side=LEFT)
 
         self.txtnome = Entry(self.container3)
@@ -66,137 +70,96 @@ class Application:
         self.txtnome["font"] = self.fonte
         self.txtnome.pack(side=LEFT)
 
-        self.lbltelefone = Label(self.container4, text="Telefone:", font=self.fonte, width=10)
-        self.lbltelefone.pack(side=LEFT)
+        #####
+        self.lblendereco = Label(self.container4, text="Endereço:",
+                                 font=self.fonte, width=10)
+        self.lblendereco.pack(side=LEFT)
+        self.txtendereco = Entry(self.container4)
+        self.txtendereco["width"] = 25
+        self.txtendereco["font"] = self.fonte
+        self.txtendereco.pack(side=RIGHT)
+        #####
 
-        self.txttelefone = Entry(self.container4)
-        self.txttelefone["width"] = 25
-        self.txttelefone["font"] = self.fonte
-        self.txttelefone.pack(side=LEFT)
+        self.bntInsert = Button(
+            self.container8, text="Inserir", font=self.fonte, width=12)
+        self.bntInsert["command"] = self.inserirPlace
+        self.bntInsert.pack(side=LEFT)
 
-        self.lblemail= Label(self.container5, text="E-mail:", font=self.fonte, width=10)
-        self.lblemail.pack(side=LEFT)
+        self.bntAlterar = Button(
+            self.container8, text="Alterar", font=self.fonte, width=12)
+        self.bntAlterar["command"] = self.alterarPlace
+        self.bntAlterar.pack(side=LEFT)
 
-        self.txtemail = Entry(self.container5)
-        self.txtemail["width"] = 25
-        self.txtemail["font"] = self.fonte
-        self.txtemail.pack(side=LEFT)
-
-        self.lblusuario= Label(self.container6, text="Usuário:", font=self.fonte, width=10)
-        self.lblusuario.pack(side=LEFT)
-
-        self.txtusuario = Entry(self.container6)
-        self.txtusuario["width"] = 25
-        self.txtusuario["font"] = self.fonte
-        self.txtusuario.pack(side=LEFT)
-
-        self.lblsenha= Label(self.container7, text="Senha:", font=self.fonte, width=10)
-        self.lblsenha.pack(side=LEFT)
-
-        self.txtsenha = Entry(self.container7)
-        self.txtsenha["width"] = 25
-        self.txtsenha["show"] = "*"
-        self.txtsenha["font"] = self.fonte
-        self.txtsenha.pack(side=LEFT)
-
-        self.bntInsert = Button(self.container8, text="Inserir", font=self.fonte, width=12)
-        self.bntInsert["command"] = self.inserirUsuario
-        self.bntInsert.pack (side=LEFT)
-
-        self.bntAlterar = Button(self.container8, text="Alterar", font=self.fonte, width=12)
-        self.bntAlterar["command"] = self.alterarUsuario
-        self.bntAlterar.pack (side=LEFT)
-
-        self.bntExcluir = Button(self.container8, text="Excluir", font=self.fonte, width=12)
-        self.bntExcluir["command"] = self.excluirUsuario
+        self.bntExcluir = Button(
+            self.container8, text="Excluir", font=self.fonte, width=12)
+        self.bntExcluir["command"] = self.excluirPlace
         self.bntExcluir.pack(side=LEFT)
 
         self.lblmsg = Label(self.container9, text="")
         self.lblmsg["font"] = ("Verdana", "9", "italic")
         self.lblmsg.pack()
 
+    def inserirPlace(self):
+        try:
+            place = PlaceModel()
 
-    def inserirUsuario(self):
-        user = Usuarios()
+            place.nome = self.txtnome.get()
+            place.id = self.txtidlugar.get()
+            place.endereco = self.txtendereco.get()
 
-        user.nome = self.txtnome.get()
-        user.telefone = self.txttelefone.get()
-        user.email = self.txtemail.get()
-        user.usuario = self.txtusuario.get()
-        user.senha = self.txtsenha.get()
+            # self.lblmsg["text"] = place.insertPlace(place)
+            place.insertPlace(place)
 
-        self.lblmsg["text"] = user.insertUser()
+            self.txtnome.delete(0, END)
+            self.txtidlugar.delete(0, END)
+            self.txtendereco.delete(0, END)
 
-        self.txtidusuario.delete(0, END)
+            self.lblmsg["text"] = "Lugar Cadastrado com Sucesso"
+        except Exception as e:
+            self.lblmsg["text"] = f"error: {e}"
+
+    def alterarPlace(self):
+        old_place = PlaceModel()
+        new_place = PlaceModel()
+        old_place = PlaceModel.find(self.txtidlugar.get())
+        new_place.id = old_place.id
+        new_place.nome = self.txtnome.get()
+        new_place.endereco = self.txtendereco.get()
+
+        old_place.delete()
+        new_place.save()
+
+        self.lblmsg["text"] = "Lugar atualizado com Sucesso"
+
+        self.txtidlugar.delete(0, END)
         self.txtnome.delete(0, END)
-        self.txttelefone.delete(0, END)
-        self.txtemail.delete(0, END)
-        self.txtusuario.delete(0, END)
-        self.txtsenha.delete(0, END)
+        self.txtendereco.delete(0, END)
 
+    def excluirPlace(self):
 
+        old_place = PlaceModel.find(self.txtidlugar.get())
 
-    def alterarUsuario(self):
-        user = Usuarios()
+        old_place.delete()
 
-        user.idusuario = self.txtidusuario.get()
-        user.nome = self.txtnome.get()
-        user.telefone = self.txttelefone.get()
-        user.email = self.txtemail.get()
-        user.usuario = self.txtusuario.get()
-        user.senha = self.txtsenha.get()
+        self.lblmsg["text"] = "Lugar Excluído com Sucesso"
 
-        self.lblmsg["text"] = user.updateUser()
-
-        self.txtidusuario.delete(0, END)
+        self.txtidlugar.delete(0, END)
         self.txtnome.delete(0, END)
-        self.txttelefone.delete(0, END)
-        self.txtemail.delete(0, END)
-        self.txtusuario.delete(0, END)
-        self.txtsenha.delete(0, END)
+        self.txtendereco.delete(0,END)
 
+    def buscarPlace(self):
+        place = PlaceModel()
+        placeid = self.txtidlugar.get()
 
+        place = place.find(placeid)
+        self.lblmsg["text"] = f"Lugar de Nome: {place.nome}"
 
-    def excluirUsuario(self):
-        user = Usuarios()
-
-        user.idusuario = self.txtidusuario.get()
-
-        self.lblmsg["text"] = user.deleteUser()
-
-        self.txtidusuario.delete(0, END)
+        self.txtidlugar.delete(0, END)
         self.txtnome.delete(0, END)
-        self.txttelefone.delete(0, END)
-        self.txtemail.delete(0, END)
-        self.txtusuario.delete(0, END)
-        self.txtsenha.delete(0, END)
-
-
-    def buscarUsuario(self):
-        user = Usuarios()
-
-        idusuario = self.txtidusuario.get()
-
-        self.lblmsg["text"] = user.selectUser(idusuario)
-
-        self.txtidusuario.delete(0, END)
-        self.txtidusuario.insert(INSERT, user.idusuario)
-
-        self.txtnome.delete(0, END)
-        self.txtnome.insert(INSERT, user.nome)
-
-        self.txttelefone.delete(0, END)
-        self.txttelefone.insert(INSERT,user.telefone)
-
-        self.txtemail.delete(0, END)
-        self.txtemail.insert(INSERT, user.email)
-
-        self.txtusuario.delete(0, END)
-        self.txtusuario.insert(INSERT, user.usuario)
-
-        self.txtsenha.delete(0, END)
-        self.txtsenha.insert(INSERT,user.senha)
-
+        self.txtendereco.delete(0, END)
+        self.txtidlugar.insert(INSERT, f"{place.id}")
+        self.txtnome.insert(INSERT, f"{place.nome}")
+        self.txtendereco.insert(INSERT, f"{place.endereco}")
 
 
 root = Tk()
